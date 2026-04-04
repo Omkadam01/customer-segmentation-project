@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Segmentation | Project 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8f9fc;--s:#fff;--s2:#f1f4f9;--s3:#e8ecf4;--ink:#0d1117;--ink2:#3d4452;--ink3:#7a8194;--blue:#1a56db;--green:#0e9f6e;--red:#e02424;--amber:#e3a008;--border:rgba(0,0,0,0.07);--r:12px}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.h1{font-size:28px;font-weight:800;letter-spacing:-.02em}.sub{font-size:12px;color:var(--ink3);font-family:'DM Mono',monospace;margin-top:.25rem}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;background:rgba(26,86,219,.1);color:var(--blue)}
+.seg-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.seg-card{border-radius:14px;padding:1.2rem 1.4rem;border:1.5px solid;cursor:pointer;transition:transform .18s}
+.seg-card:hover{transform:translateY(-2px)}
+.seg-card.c{border-color:rgba(26,86,219,.4);background:rgba(26,86,219,.05)}
+.seg-card.l{border-color:rgba(14,159,110,.4);background:rgba(14,159,110,.05)}
+.seg-card.r{border-color:rgba(224,36,36,.35);background:rgba(224,36,36,.04)}
+.seg-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:.4rem}
+.tc{color:var(--blue)}.tl{color:var(--green)}.tr{color:var(--red)}
+.seg-n{font-size:38px;font-weight:800;line-height:1;margin-bottom:.25rem}
+.seg-s{font-size:12px;color:var(--ink3);font-family:'DM Mono',monospace}
+.seg-bar{height:4px;border-radius:2px;margin-top:.85rem}
+.bc{background:var(--blue)}.bl{background:var(--green)}.br{background:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+.card{background:var(--s);border-radius:var(--r);padding:1.25rem;border:1px solid var(--border)}
+.ct{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-family:'DM Mono',monospace;margin-bottom:1rem}
+.rfm{display:flex;flex-direction:column;gap:10px}
+.rfm-row{display:flex;align-items:center;gap:10px;font-size:11.5px;font-family:'DM Mono',monospace}
+.rfm-d{width:65px;color:var(--ink3);font-size:10.5px;text-align:right;flex-shrink:0}
+.rfm-t{flex:1;background:var(--s2);border-radius:3px;height:7px}
+.rfm-f{height:100%;border-radius:3px;transition:width .4s}
+.rfm-v{width:55px;text-align:right;color:var(--ink2);font-size:10.5px}
+.rfm-note{margin-top:1rem;font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace;line-height:1.6}
+.tabs{display:flex;gap:8px;margin-bottom:1.25rem}
+.tab{font-family:'DM Mono',monospace;font-size:11px;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--s2);color:var(--ink3);cursor:pointer;transition:all .15s}
+.tab.ac{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab.ac-c{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tab.ac-l{background:var(--green);color:#fff;border-color:var(--green)}
+.tab.ac-r{background:var(--red);color:#fff;border-color:var(--red)}
+.play{background:var(--s);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem}
+.play-h{padding:.8rem 1.2rem;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-family:'DM Mono',monospace;border-bottom:1px solid var(--border)}
+.play-row{display:grid;grid-template-columns:1fr 2fr 2fr;border-bottom:1px solid var(--border)}
+.play-row:last-child{border-bottom:none}
+.play-c{padding:.75rem 1rem;font-size:12px;border-right:1px solid var(--border);color:var(--ink2)}
+.play-c:last-child{border-right:none}
+.play-c strong{color:var(--ink);display:block;margin-bottom:.15rem;font-size:12.5px}
+.pill{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace}
+.pc{background:rgba(26,86,219,.1);color:var(--blue)}.pl{background:rgba(14,159,110,.1);color:var(--green)}.pr{background:rgba(224,36,36,.08);color:var(--red)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem}
+.m{background:var(--s2);border-radius:10px;padding:.9rem 1rem;border:1px solid var(--border)}
+.ml{font-size:10.5px;color:var(--ink3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.mv{font-size:20px;font-weight:800;color:var(--ink)}
+.ms{font-size:10.5px;color:var(--ink3);font-family:'DM Mono',monospace;margin-top:.2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div><div class="h1">Customer Segmentation</div><div class="sub">K-Means RFM Analysis · 500 customers · 3 segments · Silhouette=0.340</div></div>
+    <span class="badge">Project 02</span>
+  </div>
+  <div class="seg-row">
+    <div class="seg-card c" onclick="seg('Champions',this)">
+      <div class="seg-tag tc">Champions</div>
+      <div class="seg-n">167</div>
+      <div class="seg-s">33.4% customers · 51.7% revenue</div>
+      <div class="seg-bar bc" style="width:52%"></div>
+    </div>
+    <div class="seg-card l" onclick="seg('Loyal Customers',this)">
+      <div class="seg-tag tl">Loyal Customers</div>
+      <div class="seg-n">263</div>
+      <div class="seg-s">52.6% customers · 38.3% revenue</div>
+      <div class="seg-bar bl" style="width:38%"></div>
+    </div>
+    <div class="seg-card r" onclick="seg('At-Risk',this)">
+      <div class="seg-tag tr">At-Risk</div>
+      <div class="seg-n">70</div>
+      <div class="seg-s">14.0% customers · 10.0% revenue</div>
+      <div class="seg-bar br" style="width:10%"></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab ac" data-s="all" onclick="seg('all',this)">All Segments</button>
+    <button class="tab" data-s="Champions" onclick="seg('Champions',this)">Champions</button>
+    <button class="tab" data-s="Loyal Customers" onclick="seg('Loyal Customers',this)">Loyal</button>
+    <button class="tab" data-s="At-Risk" onclick="seg('At-Risk',this)">At-Risk</button>
+  </div>
+  <div class="metrics">
+    <div class="m"><div class="ml">Avg Recency</div><div class="mv" id="mr">69.4 d</div><div class="ms">days since last order</div></div>
+    <div class="m"><div class="ml">Avg Frequency</div><div class="mv" id="mf">10.2</div><div class="ms">orders per customer</div></div>
+    <div class="m"><div class="ml">Avg Monetary</div><div class="mv" id="mm">₹26.7L</div><div class="ms">lifetime value</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="ct">Revenue share by segment</div><div style="position:relative;height:220px"><canvas id="pc"></canvas></div></div>
+    <div class="card"><div class="ct">RFM profile — selected segment</div>
+      <div class="rfm">
+        <div class="rfm-row"><span class="rfm-d">Recency</span><div class="rfm-t"><div class="rfm-f" id="rr" style="background:var(--blue)"></div></div><span class="rfm-v" id="rv"></span></div>
+        <div class="rfm-row"><span class="rfm-d">Frequency</span><div class="rfm-t"><div class="rfm-f" id="rf" style="background:var(--green)"></div></div><span class="rfm-v" id="fv"></span></div>
+        <div class="rfm-row"><span class="rfm-d">Monetary</span><div class="rfm-t"><div class="rfm-f" id="rm" style="background:var(--amber)"></div></div><span class="rfm-v" id="mv2"></span></div>
+      </div>
+      <div class="rfm-note" id="rn">Overall portfolio weighted average across all 500 customers.</div>
+    </div>
+  </div>
+  <div class="play">
+    <div class="play-h">Strategy playbook</div>
+    <div class="play-row"><div class="play-c"><span class="pill pc">Champions</span></div><div class="play-c"><strong>Action</strong>VIP program, early product access, personalized rewards & recognition</div><div class="play-c"><strong>Track</strong>Churn rate, NPS, referral count, repeat purchase rate</div></div>
+    <div class="play-row"><div class="play-c"><span class="pill pl">Loyal</span></div><div class="play-c"><strong>Action</strong>Cross-sell premium SKUs, bundle offers, loyalty points accumulation</div><div class="play-c"><strong>Track</strong>Avg order value, category expansion rate, upsell conversion</div></div>
+    <div class="play-row"><div class="play-c"><span class="pill pr">At-Risk</span></div><div class="play-c"><strong>Action</strong>Win-back email series, 20% time-limited discount, re-engagement flow</div><div class="play-c"><strong>Track</strong>Re-engagement rate, days since last purchase, email open rate</div></div>
+  </div>
+</div>
+<script>
+const D={all:{r:'69.4 d',f:'10.2',m:'₹26.7L',rr:42,rf:52,rm:55,n:'Overall portfolio: weighted avg across all 500 customers.'},
+'Champions':{r:'40.6 d',f:'13.0',m:'₹41.6L',rr:85,rf:90,rm:100,n:'High recency, high frequency, highest monetary — your best customers. Retain at all costs.'},
+'Loyal Customers':{r:'48.5 d',f:'8.8',m:'₹19.6L',rr:78,rf:65,rm:52,n:'Moderately recent, moderate frequency — growing segment with clear upsell potential.'},
+'At-Risk':{r:'207.7 d',f:'7.2',m:'₹19.2L',rr:12,rf:42,rm:48,n:'Long recency gap — customers who used to buy but have gone silent. Act within 30 days.'}};
+function seg(s,btn){
+  const d=D[s]||D.all;
+  document.getElementById('mr').textContent=d.r;
+  document.getElementById('mf').textContent=d.f;
+  document.getElementById('mm').textContent=d.m;
+  document.getElementById('rr').style.width=d.rr+'%';
+  document.getElementById('rf').style.width=d.rf+'%';
+  document.getElementById('rm').style.width=d.rm+'%';
+  document.getElementById('rv').textContent=d.r;
+  document.getElementById('fv').textContent=d.f;
+  document.getElementById('mv2').textContent=d.m;
+  document.getElementById('rn').textContent=d.n;
+  document.querySelectorAll('.tab').forEach(b=>b.className='tab');
+  if(btn&&btn.classList.contains('tab')){
+    btn.className='tab '+(s==='Champions'?'ac-c':s==='Loyal Customers'?'ac-l':s==='At-Risk'?'ac-r':'ac');
+  }
+}
+seg('all',document.querySelector('.tab'));
+new Chart(document.getElementById('pc'),{type:'doughnut',
+  data:{labels:['Champions','Loyal Customers','At-Risk'],datasets:[{data:[51.7,38.3,10.0],backgroundColor:['#1a56db','#0e9f6e','#e02424'],borderWidth:0,hoverOffset:4}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},color:'#7a8194',boxWidth:10,padding:12}}}}
+});
+</script>
+</body>
+</html>
