@@ -1,130 +1,96 @@
-# 👥 Project 2 — Customer Segmentation Analysis
+# Customer Segmentation Analysis
 
-> RFM-based customer segmentation using K-Means clustering.
-> Identifies Champions, Loyal Customers, and At-Risk segments with actionable retention strategies.
-
----
-
-## 🔥 Live Demo
-
-Open `dashboard/index.html` — click segments to explore RFM profiles, charts update live.
+RFM-based customer segmentation using K-Means clustering on 500 customers derived from 5,000 sales transactions. Segments customers into Champions, Loyal Customers, and At-Risk groups with a full retention strategy for each.
 
 ---
 
-## 📁 Project Structure
-
-```
-project2-customer-segmentation/
-│
-├── data/
-│   ├── sales_data.csv          ← Source transactions (from Project 1)
-│   ├── rfm_segments.csv        ← 500 customers with RFM + segment labels
-│   └── segment_summary.csv     ← Aggregated metrics per segment
-│
-├── notebooks/
-│   └── 01_rfm_kmeans.py        ← Full ML pipeline: RFM → Scaler → KMeans → Labels
-│
-├── sql/
-│   └── segmentation_queries.sql ← RFM scoring, cohort analysis, CLV queries
-│
-├── models/                     ← (model artifacts if saved via joblib)
-│
-├── dashboard/
-│   └── index.html              ← Interactive segmentation dashboard
-│
-├── reports/                    ← 5 auto-generated charts (run notebook)
-│
-├── requirements.txt
-└── README.md
-```
-
----
-
-## 🛠 Tech Stack & Methodology
-
-| Step | Tool | Detail |
-|------|------|--------|
-| Feature Engineering | Pandas | Recency, Frequency, Monetary from raw transactions |
-| Scaling | Scikit-learn StandardScaler | Z-score normalisation |
-| Optimal K | Silhouette score + Elbow method | k=3 selected (silhouette=0.340) |
-| Clustering | Scikit-learn KMeans | n_init=10, random_state=42 |
-| Dimensionality Reduction | PCA (2D) | For scatter visualisation |
-| Visualisation | Matplotlib, Seaborn | 5 charts |
-| SQL | PostgreSQL | RFM scoring with NTILE, cohort retention |
-
----
-
-## ⚡ Quick Start
-
-```bash
-pip install -r requirements.txt
-python notebooks/01_rfm_kmeans.py
-open dashboard/index.html
-```
-
----
-
-## 📊 Segment Results
-
-| Segment | Customers | Revenue Share | Avg Recency | Avg Frequency | Avg Monetary |
-|---------|-----------|--------------|-------------|---------------|-------------|
-| Champions | 167 (33.4%) | **51.7%** | 40.6 days | 13.0 orders | ₹41.6L |
-| Loyal Customers | 263 (52.6%) | 38.3% | 48.5 days | 8.8 orders | ₹19.6L |
-| At-Risk | 70 (14.0%) | 10.0% | 207.7 days | 7.2 orders | ₹19.2L |
-
----
-
-## 💡 Business Insights & Strategy
-
-### 🏆 Champions (167 customers → 51.7% revenue)
-- These are your best customers: recent, frequent, high-spend
-- **Action:** VIP loyalty program, early access to new products, personalized thank-you campaigns
-- **Risk:** If even 10% churn, you lose ₹6.95 Cr in revenue
-- **Metric:** Track monthly churn rate and NPS score
-
-### 💛 Loyal Customers (263 customers → 38.3% revenue)
-- Strong base, moderate recency — engaged but not maximised
-- **Action:** Cross-sell premium products (Headphones to Laptop buyers), bundle offers, loyalty points
-- **Opportunity:** Moving 20% of Loyal → Champions would add ₹9.2 Cr revenue
-- **Metric:** Average order value growth, category expansion rate
-
-### ⚠️ At-Risk (70 customers → 10% revenue)
-- Long recency gap (208 days avg) — these customers are disengaging
-- **Action:** Win-back email series, 20% time-limited discount, personalized product recommendation
-- **Urgency:** Without intervention, estimated 60% will churn within 6 months
-- **Metric:** Re-engagement rate, campaign open rate, days since last purchase
-
----
-
-## 🗄 SQL Highlights
-
-- **RFM Scoring** using `NTILE(5)` window function for percentile-based scoring
-- **Cohort Analysis** — month-by-month retention tracking using `DATE_TRUNC` + `AGE`
-- **CLV Calculation** — historical + projected annual customer lifetime value
-- **Champion Behaviour** — preferred regions and products for top-tier customers
-- **Win-back Targeting** — At-Risk customers sorted by lost revenue potential
-
----
-
-## 📈 Charts Generated
+## Files
 
 | File | Description |
 |------|-------------|
-| `01_optimal_k.png` | Elbow curve + silhouette score comparison |
-| `02_rfm_distributions.png` | RFM histograms per segment |
-| `03_pca_scatter.png` | 2D PCA projection — cluster separation |
-| `04_segment_overview.png` | Revenue share donut + customer count bar |
-| `05_rfm_heatmap.png` | Segment × RFM dimension heatmap |
+| `sales_data.csv` | 5,000 raw sales transactions (source data) |
+| `rfm_segments.csv` | 500 customers with computed RFM values and segment labels |
+| `segment_summary.csv` | Aggregated metrics per segment |
+| `customer_segmentation.xlsx` | Formatted Excel report with segment tables and strategy playbook |
+| `analysis.py` | Full ML pipeline — RFM scoring, StandardScaler, KMeans, PCA, 5 charts |
+| `queries.sql` | SQL-based RFM scoring, cohort retention, and CLV queries |
+| `dashboard.html` | Interactive segmentation dashboard — open in any browser |
+| `requirements.txt` | Python dependencies |
 
 ---
 
-## 📌 Interview Talking Points
+## Tech Stack
 
-- "I chose K-Means after comparing 7 values of k using both elbow method and silhouette score — I didn't just guess k=3"
-- "The SQL file shows I can do RFM scoring purely in SQL using NTILE window functions, without needing Python"
-- "The cohort retention query uses DATE_TRUNC and self-joins — the same pattern used in production analytics at companies like Flipkart"
-- "The At-Risk segment has 208-day average recency — without a win-back campaign, I estimated ₹8 Cr at risk of churning"
+| Layer | Tools |
+|-------|-------|
+| Feature Engineering | Python, Pandas |
+| Machine Learning | Scikit-learn — StandardScaler, KMeans, PCA |
+| Optimal K Selection | Elbow method and Silhouette score comparison |
+| Visualization | Matplotlib, Seaborn |
+| SQL | PostgreSQL — NTILE, cohort analysis, CLV calculation |
+| Web Dashboard | Chart.js, HTML, CSS, JavaScript |
 
 ---
 
-*Built by [Your Name] | Data Analyst Portfolio | 2024*
+## Quick Start
+
+```bash
+pip install -r requirements.txt
+python analysis.py
+```
+
+Open `dashboard.html` in a browser to explore segment profiles interactively.
+
+---
+
+## Methodology
+
+1. Compute Recency, Frequency, and Monetary (RFM) values per customer from raw transactions
+2. Normalize features using StandardScaler
+3. Select optimal k by comparing Elbow curve and Silhouette scores across k = 2 to 8
+4. Fit KMeans with k = 3 (Silhouette = 0.340)
+5. Label clusters by descending average monetary value
+6. Visualize using PCA 2D projection and RFM heatmaps
+
+---
+
+## Segment Results
+
+| Segment | Customers | Revenue Share | Avg Recency | Avg Orders | Avg Lifetime Value |
+|---------|-----------|--------------|-------------|------------|--------------------|
+| Champions | 167 (33.4%) | 51.7% | 40.6 days | 13.0 | Rs. 41.6L |
+| Loyal Customers | 263 (52.6%) | 38.3% | 48.5 days | 8.8 | Rs. 19.6L |
+| At-Risk | 70 (14.0%) | 10.0% | 207.7 days | 7.2 | Rs. 19.2L |
+
+---
+
+## Business Strategy
+
+**Champions** — Launch a VIP loyalty program with early product access and personalized rewards. Track churn rate and NPS score monthly. If even 10% of this group churns, the business loses Rs. 6.95 Cr in revenue.
+
+**Loyal Customers** — Cross-sell premium products and introduce bundle offers. Moving 20% of this group to Champion status would add an estimated Rs. 9.2 Cr in revenue.
+
+**At-Risk** — Deploy a win-back email series with a time-limited 20% discount. Without intervention, an estimated 60% will churn within 6 months.
+
+---
+
+## SQL Highlights
+
+- RFM percentile scoring using `NTILE(5)` window function
+- Monthly cohort retention using `DATE_TRUNC` and `AGE`
+- Customer Lifetime Value calculation — historical and projected annual
+- At-Risk customers ranked by lost revenue potential
+
+---
+
+## Repo Name
+
+`customer-segmentation-project`
+
+## Description
+
+RFM + K-Means customer segmentation — Python, Scikit-learn, SQL cohort analysis, interactive HTML dashboard.
+
+---
+
+
