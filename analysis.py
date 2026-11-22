@@ -13,12 +13,16 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.decomposition import PCA
-import warnings, os
+import warnings, os, sys
 warnings.filterwarnings('ignore')
 
-DATA_PATH    = os.path.join(os.path.dirname(__file__), '..', 'data', 'sales_data.csv')
-REPORTS_PATH = os.path.join(os.path.dirname(__file__), '..', 'reports')
-MODELS_PATH  = os.path.join(os.path.dirname(__file__), '..', 'models')
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
+BASE_PATH    = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH    = os.path.join(BASE_PATH, 'sales_data.csv')
+REPORTS_PATH = os.path.join(BASE_PATH, 'reports')
+MODELS_PATH  = os.path.join(BASE_PATH, 'models')
 os.makedirs(REPORTS_PATH, exist_ok=True)
 os.makedirs(MODELS_PATH, exist_ok=True)
 
@@ -119,8 +123,8 @@ print("=" * 65)
 print(summary.to_string(index=False))
 
 # Save CSVs
-rfm.to_csv(os.path.join(os.path.dirname(__file__), '..', 'data', 'rfm_segments.csv'), index=False)
-summary.to_csv(os.path.join(os.path.dirname(__file__), '..', 'data', 'segment_summary.csv'), index=False)
+rfm.to_csv(os.path.join(BASE_PATH, 'rfm_segments.csv'), index=False)
+summary.to_csv(os.path.join(BASE_PATH, 'segment_summary.csv'), index=False)
 print("\n✅ Saved: rfm_segments.csv & segment_summary.csv")
 
 
