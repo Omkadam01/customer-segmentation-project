@@ -55,6 +55,17 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink)}
 .ml{font-size:10.5px;color:var(--ink3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
 .mv{font-size:20px;font-weight:800;color:var(--ink)}
 .ms{font-size:10.5px;color:var(--ink3);font-family:'DM Mono',monospace;margin-top:.2rem}
+@media (max-width:700px){
+  .wrap{padding:1.25rem .85rem}
+  .header{align-items:flex-start;gap:1rem}
+  .h1{font-size:23px}
+  .seg-row,.grid2,.metrics{grid-template-columns:1fr}
+  .tabs{overflow-x:auto;padding-bottom:.25rem}
+  .tab{white-space:nowrap}
+  .play-row{grid-template-columns:1fr}
+  .play-c{border-right:none;border-bottom:1px solid var(--border)}
+  .play-c:last-child{border-bottom:none}
+}
 </style>
 </head>
 <body>

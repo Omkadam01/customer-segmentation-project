@@ -41,6 +41,25 @@ python analysis.py
 
 Open `dashboard.html` in a browser to explore segment profiles interactively.
 
+## Web Deployment
+
+The dashboard is a static site and is prepared for GitHub Pages. It does not
+require a backend, database, environment variables, or build command.
+
+- Local preview: run `python -m http.server 8000`, then open
+  `http://localhost:8000/`.
+- Production entry point: `index.html` redirects to the existing
+  `dashboard.html` interface.
+- Deployment workflow: `.github/workflows/pages.yml` publishes the repository
+  root whenever a commit is pushed to `main` (after GitHub Pages is configured
+  to use **GitHub Actions** as its source).
+- Expected URL after activation:
+  `https://omkadam01.github.io/customer-segmentation-project/`
+
+No visitor data is collected by this dashboard. Chart.js and the two web fonts
+are loaded from public CDNs, so an internet connection is required for charts
+and custom typography.
+
 ---
 
 ## Methodology
